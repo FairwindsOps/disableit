@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: disable-du
+  labels:
+    app: disable-du
+spec:
+  selector:
+    matchLabels:
+      name: disable-du
+  template:
+    metadata:
+      labels:
+        name: disable-du
+    spec:
+      containers:
+      - name: main
+        image: quay.io/reactiveops/disableit
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 50Mi
+            cpu: 10m
+          requests:
+            memory: 50Mi
+            cpu: 10m
+        volumeMounts:
+        - name: hostbin
+          mountPath: /hostbin
+      volumes:
+      - name: hostbin
+        hostPath:
+          path: /usr/bin
+  updateStrategy:
+    type: RollingUpdate
